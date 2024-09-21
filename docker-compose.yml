@@ -1,0 +1,77 @@
+services:
+#  front:
+#    build:
+#      context: front/
+#      dockerfile: Dockerfile
+#    ports:
+#      - "3000:3000"
+#    networks:
+#      - swc
+#  api:
+#    build:
+#      context: api/
+#      dockerfile: Dockerfile
+#    depends_on:
+#      mysql:
+#        condition: service_healthy
+#    ports:
+#      - "8000:8000"
+#    environment:
+#      - PYTHONUNBUFFERED=1
+#      - LOG_LEVEL=debug
+#    networks:
+#      - swc 
+  api:
+    build:
+      context: BackEnd/api/
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "8080:80"
+    volumes:
+        - ./BackEnd/api/:/var/www/html
+    networks:
+      - swc
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "1"
+        mode: "non-blocking"
+  mysql:
+    build:
+      context: BackEnd/mysql/
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "3306:3306"
+    command: --init-file /app/init.sql
+    environment:
+      MYSQL_DATABASE: 'swc'
+      MYSQL_ROOT_PASSWORD: 'swc' 
+      MYSQL_USER: 'swc'
+      MYSQL_PASS: 'swc'
+    volumes:
+      - type: volume
+        source: mysql-data
+        target: /var/lib/mysql
+    networks:
+      - swc
+    healthcheck:
+      interval: 10s
+      retries: 7
+      start_period: 60s
+      test: mysqladmin ping -h localhost
+      timeout: 90s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "1"
+        mode: "non-blocking"
+networks:
+  swc:
+    driver: bridge
+volumes:
+  mysql-data:
+  html:
