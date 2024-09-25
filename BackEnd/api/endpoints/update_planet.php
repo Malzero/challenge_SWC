@@ -1,8 +1,8 @@
 <?php
-    require_once('../src/Client.class.php');
+    require_once('../src/Planets.class.php');
 
     if($_SERVER['REQUEST_METHOD'] == 'PUT' ){
-            Client::update_planet();
+            Planets::update_planet();
         }
 
 ?>

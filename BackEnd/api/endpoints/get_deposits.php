@@ -1,8 +1,8 @@
 <?php
-    require_once('../src/Client.class.php');
+    require_once('../src/Deposits.class.php');
 
     if($_SERVER['REQUEST_METHOD'] == 'GET'){
-            Client::get_deposits();
+            Deposits::get_deposits();
         }
 
 ?>

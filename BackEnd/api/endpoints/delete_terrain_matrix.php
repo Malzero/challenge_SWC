@@ -1,8 +1,8 @@
 <?php
-    require_once('../src/Client.class.php');
+    require_once('../src/Terrains.class.php');
 
     if($_SERVER['REQUEST_METHOD'] == 'DELETE'){
-            Client::delete_terrain_matrix();
+            Terrains::delete_terrain_matrix();
         }
 
 ?>

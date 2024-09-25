@@ -1,8 +1,8 @@
 <?php
-    require_once('../src/Client.class.php');
+    require_once('../src/Deposits.class.php');
 
     if($_SERVER['REQUEST_METHOD'] == 'PUT' ){
-            Client::update_deposit();
+            Deposits::update_deposit();
         }
 
 ?>
