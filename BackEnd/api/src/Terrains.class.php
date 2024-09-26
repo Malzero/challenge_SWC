@@ -41,6 +41,42 @@ class Terrains
             }
         }
     }
+    private static function update_terrain($id, $planet_id, $terrain_coordX, $terrain_coordY, $terrain_have_deposit, $terrain_type_id)
+    {
+        $database = new Database();
+        $conn = $database->getConnection();
+
+        $query = 'UPDATE swc.planet_terrain
+                    SET planet_id=?, terrain_have_deposit=?, terrain_type_id=?, terrain_coordX=?, terrain_coordY=?
+                    WHERE id=? ;';
+
+        if ($stmt = $conn->prepare($query)) {
+            $stmt->bind_param("iiiiii", $planet_id, $terrain_have_deposit, $terrain_type_id, $terrain_coordX, $terrain_coordY, $id);
+            //printf("%d %d %d %d %d %d\n",$id, $planet_id, $terrain_coordX, $terrain_coordY, $terrain_have_deposit, $terrain_type_id);
+            try {
+                if ($stmt->execute()) {
+                    if ($stmt->affected_rows && $stmt->affected_rows >= 1) {
+                        $response = array((object)['message' => "Data updated", "affected_rows" => $stmt->affected_rows, 'code' => 201]);
+                        mysqli_stmt_close($stmt);
+                        return ($response);
+                    } else {
+                        $response = array((object)['message' => "Error updating data", "error" => $stmt->error, 'sql_code' => $stmt->errno, 'code' => 304]);
+                        mysqli_stmt_close($stmt);
+                        return ($response);
+                    }
+                } else {
+                    $response = array((object)['message' => "Error updating data", "error" => $stmt->error, 'sql_code' => $stmt->errno, 'code' => 409]);
+                    mysqli_stmt_close($stmt);
+                    return ($response);
+                }
+                mysqli_close($conn);
+            } catch (\Throwable $th) {
+                $response = array((object)['message' => "Error updating data", "error" => $stmt->error, 'sql_code' => $stmt->errno, 'code' => 409]);
+                mysqli_stmt_close($stmt);
+                return ($response);
+            }
+        }
+    }
     public static function create_terrain_matrix()
     {
         $helpers = new Helpers();
@@ -163,42 +199,6 @@ class Terrains
                     mysqli_stmt_close($stmt);
                 }
                 mysqli_close($conn);
-            }
-        }
-    }
-    private static function update_terrain($id, $planet_id, $terrain_coordX, $terrain_coordY, $terrain_have_deposit, $terrain_type_id)
-    {
-        $database = new Database();
-        $conn = $database->getConnection();
-
-        $query = 'UPDATE swc.planet_terrain
-                    SET planet_id=?, terrain_have_deposit=?, terrain_type_id=?, terrain_coordX=?, terrain_coordY=?
-                    WHERE id=? ;';
-
-        if ($stmt = $conn->prepare($query)) {
-            $stmt->bind_param("iiiiii", $planet_id, $terrain_have_deposit, $terrain_type_id, $terrain_coordX, $terrain_coordY, $id);
-            //printf("%d %d %d %d %d %d\n",$id, $planet_id, $terrain_coordX, $terrain_coordY, $terrain_have_deposit, $terrain_type_id);
-            try {
-                if ($stmt->execute()) {
-                    if ($stmt->affected_rows && $stmt->affected_rows >= 1) {
-                        $response = array((object)['message' => "Data updated", "affected_rows" => $stmt->affected_rows, 'code' => 201]);
-                        mysqli_stmt_close($stmt);
-                        return ($response);
-                    } else {
-                        $response = array((object)['message' => "Error updating data", "error" => $stmt->error, 'sql_code' => $stmt->errno, 'code' => 304]);
-                        mysqli_stmt_close($stmt);
-                        return ($response);
-                    }
-                } else {
-                    $response = array((object)['message' => "Error updating data", "error" => $stmt->error, 'sql_code' => $stmt->errno, 'code' => 409]);
-                    mysqli_stmt_close($stmt);
-                    return ($response);
-                }
-                mysqli_close($conn);
-            } catch (\Throwable $th) {
-                $response = array((object)['message' => "Error updating data", "error" => $stmt->error, 'sql_code' => $stmt->errno, 'code' => 409]);
-                mysqli_stmt_close($stmt);
-                return ($response);
             }
         }
     }
