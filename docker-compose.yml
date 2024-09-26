@@ -21,6 +21,24 @@ services:
 #      - LOG_LEVEL=debug
 #    networks:
 #      - swc 
+  front:
+    build:
+      context: FrontEnd/challenge_SWC/
+      dockerfile: Dockerfile
+    ports:
+      - '8081:3000'
+    volumes:
+      - ./FrontEnd/challenge_SWC/:/app
+    #command: yarn serve
+    networks:
+      - swc
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "1"
+        mode: "non-blocking"
+
   api:
     build:
       context: BackEnd/api/
