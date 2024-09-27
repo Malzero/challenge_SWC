@@ -6,7 +6,7 @@
                 <b-row align-content="stretch" class="spaceGridY text-center " v-for="y in 20" :key="y">
                     <b-col class="spaceGridX" v-for="x in 20" :key="x">
                         <div class="" v-for="(planet, planetIndex) in planetArray" :key="planetIndex" >
-                            <b-img v-b-tooltip.hover :title="planet.name" class="planetImg" v-show="planet.sysX === x - 1 && planet.sysY === y - 1" fluid-grow
+                            <b-img v-b-tooltip.hover.html="tipMethod(planet.name, planet.sysX, planet.sysY)" class="planetImg" v-show="planet.sysX === x - 1 && planet.sysY === y - 1" fluid-grow
                                 :src="planet.img" alt="" />
                         </div>
                     </b-col>
@@ -32,9 +32,14 @@ export default {
             ],
         };
     },
+    methods: {
+      tipMethod(name,sysX, sysY) {
+        // Note this is called each time the tooltip is first opened.
+        return '('+ sysX + ', '+ sysY +')<br/>' + name
+      }
+    }
 };
 </script>
-
 <style>
 
 
