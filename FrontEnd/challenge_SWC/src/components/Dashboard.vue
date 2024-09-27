@@ -5,10 +5,13 @@
             <b-col class="spaceGrid justify-content-center" cols="8">
                 <b-row align-content="stretch" class="spaceGridY text-center " v-for="y in 20" :key="y">
                     <b-col class="spaceGridX" v-for="x in 20" :key="x">
-                        <div class="" v-for="(planet, planetIndex) in planetArray" :key="planetIndex" >
-                            <b-img v-b-tooltip.hover.html="tipMethod(planet.name, planet.sysX, planet.sysY)" class="planetImg" v-show="planet.sysX === x - 1 && planet.sysY === y - 1" fluid-grow
-                                :src="planet.img" alt="" />
-                        </div>
+                        <b-img
+                            v-for="(planet, planetIndex) in planetArray.filter(planet => planet.sysX === x && planet.sysY === y)"
+                            :key="planetIndex" v-b-tooltip.hover.html="tipPlanet(x, y, planet.name)" class="planetImg"
+                            fluid-grow :src="planet.img" alt="" />
+                        <div class="spaceGridX"
+                            v-if="planetArray.filter(planet => planet.sysX === x && planet.sysY === y).length === 0"
+                            v-b-tooltip.hover.html="tipCoord(x, y)"></div>
                     </b-col>
                 </b-row>
             </b-col>
@@ -22,7 +25,6 @@ export default {
     name: "Planets",
     data() {
         return {
-            notPlanet: false,
             planetArray: [
                 { "name": "Ord Radama", "sysX": 8, "sysY": 12, "icon": "O", "img": "https://custom.swcombine.com/static/8/5974-large-1678833211.png" },
                 { "name": "Tatooine", "sysX": 2, "sysY": 3, "icon": "T", "img": "https://custom.swcombine.com/static/8/632-large-1675095606.png" },
@@ -33,25 +35,32 @@ export default {
         };
     },
     methods: {
-      tipMethod(name,sysX, sysY) {
-        // Note this is called each time the tooltip is first opened.
-        return '('+ sysX + ', '+ sysY +')<br/>' + name
-      }
+        tipPlanet(sysX, sysY, name) {
+            // Note this is called each time the tooltip is first opened.
+            let message = '(' + sysX + ', ' + sysY + ')<br/>' + name
+            return message
+
+        },
+        tipCoord(sysX, sysY) {
+            // Note this is called each time the tooltip is first opened.
+
+            return '(' + sysX + ', ' + sysY + ')'
+        }
     }
 };
 </script>
 <style>
-
-
-.border-light2{
+.border-light2 {
     border-width: 1px !important;
 }
+
 .planetImg {
     height: 100% !important;
     width: 100% !important;
     vertical-align: top !important;
 }
-.planetFrame{
+
+.planetFrame {
     height: 25px !important;
     width: 25px !important;
 }
