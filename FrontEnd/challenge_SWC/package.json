@@ -1,18 +1,22 @@
 {
   "name": "challenge-swc",
   "version": "0.0.0",
-  "private": true,
-  "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host --port 3000",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview --port 4173"
   },
   "dependencies": {
-    "vue": "^3.4.29"
+    "vue": "^2.6.12",
+    "bootstrap": "^4.6.1",
+    "bootstrap-vue": "^2.23.1",
+    "@floating-ui/vue": "^1.1.5",
+    "portal-vue": "^2.1.7"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^5.0.5",
-    "vite": "^5.3.1"
+    "@vitejs/plugin-legacy": "^2.0.0",
+    "@vitejs/plugin-vue2": "^1.1.2",
+    "terser": "^5.14.2",
+    "vite": "^3.0.2"
   }
 }
