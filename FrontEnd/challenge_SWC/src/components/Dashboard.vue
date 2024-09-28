@@ -4,11 +4,11 @@
             <b-col>1 of 3</b-col>
             <b-col class="spaceGrid justify-content-center" cols="8">
                 <b-row align-content="stretch" class="spaceGridY text-center " v-for="y in 20" :key="y">
-                    <b-col class="spaceGridX" v-for="x in 20" :key="x">
+                    <b-col class="spaceGridX spaceBorder" v-for="x in 20" :key="x">
                         <b-img
                             v-for="(planet, planetIndex) in planetArray.filter(planet => planet.sysX === x && planet.sysY === y)"
                             :key="planetIndex" v-b-tooltip.hover.html="tipPlanet(x, y, planet.name)" class="planetImg"
-                            fluid-grow :src="planet.img" alt="" />
+                            :src="planet.img_url" alt="" />
                         <div class="spaceGridX"
                             v-if="planetArray.filter(planet => planet.sysX === x && planet.sysY === y).length === 0"
                             v-b-tooltip.hover.html="tipCoord(x, y)"></div>
@@ -25,14 +25,11 @@ export default {
     name: "Planets",
     data() {
         return {
-            planetArray: [
-                { "name": "Ord Radama", "sysX": 8, "sysY": 12, "icon": "O", "img": "https://custom.swcombine.com/static/8/5974-large-1678833211.png" },
-                { "name": "Tatooine", "sysX": 2, "sysY": 3, "icon": "T", "img": "https://custom.swcombine.com/static/8/632-large-1675095606.png" },
-                { "name": "Mustafar", "sysX": 6, "sysY": 12, "icon": "M", "img": "https://images.swcombine.com//galaxy/planets/2/main.gif" },
-                { "name": "Courscant", "sysX": 9, "sysY": 15, "icon": "C", "img": "https://images.swcombine.com//galaxy/planets/custom/large/3191.gif" },
-                { "name": "Sun", "sysX": 15, "sysY": 7, "icon": "S", "img": "https://images.swcombine.com//galaxy/planets/9/mini.png" },
-            ],
+            planetArray: [{}]
         };
+    },
+    mounted() {
+        this.getPlanetsAxios().then(response => this.planetArray = response)
     },
     methods: {
         tipPlanet(sysX, sysY, name) {
@@ -45,6 +42,22 @@ export default {
             // Note this is called each time the tooltip is first opened.
 
             return '(' + sysX + ', ' + sysY + ')'
+        },
+        async getPlanets() {
+            const { data } = await this.$http.get(
+                'http://localhost:8080/endpoints/get_planets.php',
+            );
+            console.log(data);
+            return data;
+            // example response: { id: 1, name: "something" }
+        },
+        async getPlanetsAxios() {
+            const { data } = await this.axios.get(
+                'http://localhost:8080/endpoints/get_planets.php',
+            )
+            return data
+
+            // example response: { id: 1, name: "something" }
         }
     }
 };
@@ -56,16 +69,18 @@ export default {
 
 .planetImg {
     height: 100% !important;
-    width: 100% !important;
     vertical-align: top !important;
 }
 
 .planetFrame {
     height: 25px !important;
     width: 25px !important;
+    max-width: 25px !important;
+    max-height: 25px !important;
 }
 
 .gridContainer {
+    min-width: 900px;
     margin-top: 5% !important;
 }
 
@@ -73,6 +88,10 @@ export default {
     background-color: rgb(0, 0, 0);
 }
 
+.spaceBorder{
+    border-style: solid;
+    border-width: 1px;
+}
 .spaceGridX {
     height: 25px !important;
     width: 25px !important;
@@ -80,8 +99,6 @@ export default {
     padding-right: 0 !important;
     padding-top: 0 !important;
     padding-bottom: 0 !important;
-    border-style: solid;
-    border-width: 1px;
 }
 
 .spaceGridY {
@@ -92,8 +109,11 @@ export default {
 }
 
 .spaceGrid {
+    flex: none !important;
     width: 500px !important;
     height: 500px !important;
+    min-width: 500px !important;
+    min-height: 500px !important;
     padding-left: 0 !important;
     padding-right: 0 !important;
     padding-top: 0 !important;
