@@ -73,10 +73,10 @@ export default {
 }
 
 .planetFrame {
-    height: 25px !important;
-    width: 25px !important;
-    max-width: 25px !important;
-    max-height: 25px !important;
+    height: 20px !important;
+    width: 20px !important;
+    max-width: 20px !important;
+    max-height: 20px !important;
 }
 
 .gridContainer {
@@ -88,13 +88,14 @@ export default {
     background-color: rgb(0, 0, 0);
 }
 
-.spaceBorder{
+.spaceBorder {
     border-style: solid;
     border-width: 1px;
 }
+
 .spaceGridX {
-    height: 25px !important;
-    width: 25px !important;
+    height: 20px !important;
+    width: 20px !important;
     padding-left: 0 !important;
     padding-right: 0 !important;
     padding-top: 0 !important;
@@ -110,15 +111,18 @@ export default {
 
 .spaceGrid {
     flex: none !important;
-    width: 500px !important;
-    height: 500px !important;
-    min-width: 500px !important;
-    min-height: 500px !important;
+    width: 400px !important;
+    height: 400px !important;
+    min-width: 400px !important;
+    min-height: 400px !important;
     padding-left: 0 !important;
     padding-right: 0 !important;
     padding-top: 0 !important;
     padding-bottom: 0 !important;
     background-image: url('https://images.swcombine.com//galaxy/systems/starfield.gif');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+
 
 }
 </style>
