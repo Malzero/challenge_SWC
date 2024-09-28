@@ -26,7 +26,7 @@ services:
       context: FrontEnd/challenge_SWC/
       dockerfile: Dockerfile
     ports:
-      - '8081:3000'
+      - '80:3000'
     volumes:
       - ./FrontEnd/challenge_SWC/src/:/app/src
       - node_modules:/app/node_modules/
