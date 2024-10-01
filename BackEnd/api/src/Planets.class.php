@@ -52,9 +52,15 @@ class Planets
     }
     public static function get_planets()
     {
-        $database = new Database();
-        $conn = $database->getConnection();
-        $query = 'SELECT
+        $helpers = new Helpers();
+        $json_params = file_get_contents("php://input");
+
+
+        if (strlen($json_params) > 0 && $helpers->isValidJSON($json_params)) {
+            $database = new Database();
+            $conn = $database->getConnection();
+            $data = json_decode($json_params);
+            $query = 'SELECT
                         swc.planets.id,
                         swc.planets.name,
                         swc.planets.sizeX,
@@ -64,36 +70,39 @@ class Planets
                         swc.planets.galX,
                         swc.planets.galY,
                         swc.planets.img_url
-                        FROM swc.planets';
-        $response = array();
-        if ($stmt = $conn->prepare($query)) {
-            if ($stmt->execute()) {
-                $stmt->bind_result($id, $name, $sizeX, $sizeY, $sysX, $sysY, $galX, $galY, $img_url);
-                while ($stmt->fetch()) {
-                    array_push(
-                        $response,
-                        (object)[
-                            'id' => $id,
-                            'name' => $name,
-                            'sizeX' => $sizeX,
-                            'sizeY' => $sizeY,
-                            'sysX' => $sysX,
-                            'sysY' => $sysY,
-                            'galX' => $galX,
-                            'galY' => $galY,
-                            'img_url' => $img_url,
-                        ]
-                    );
+                        FROM swc.planets
+                        WHERE swc.planets.galX = ? AND swc.planets.galY = ?;';
+            $response = array();
+            if ($stmt = $conn->prepare($query)) {
+                $stmt->bind_param("ii", $data->galX, $data->galY);
+                if ($stmt->execute()) {
+                    $stmt->bind_result($id, $name, $sizeX, $sizeY, $sysX, $sysY, $galX, $galY, $img_url);
+                    while ($stmt->fetch()) {
+                        array_push(
+                            $response,
+                            (object)[
+                                'id' => $id,
+                                'name' => $name,
+                                'sizeX' => $sizeX,
+                                'sizeY' => $sizeY,
+                                'sysX' => $sysX,
+                                'sysY' => $sysY,
+                                'galX' => $galX,
+                                'galY' => $galY,
+                                'img_url' => $img_url,
+                            ]
+                        );
+                    }
+                    header('Content-Type: application/json; charset=utf-8');
+                    http_response_code(200);
+                    echo json_encode($response);
+                    mysqli_stmt_close($stmt);
+                } else {
+                    http_response_code(404);
+                    mysqli_stmt_close($stmt);
                 }
-                header('Content-Type: application/json; charset=utf-8');
-                http_response_code(200);
-                echo json_encode($response);
-                mysqli_stmt_close($stmt);
-            } else {
-                http_response_code(404);
-                mysqli_stmt_close($stmt);
+                mysqli_close($conn);
             }
-            mysqli_close($conn);
         }
     }
     public static function update_planet()
